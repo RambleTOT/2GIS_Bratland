@@ -15,6 +15,9 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     private lateinit var tabsNavController: NavController
 
+    private val mapHost: MapHostFragment?
+        get() = requireActivity().supportFragmentManager.findFragmentById(R.id.mapHost) as? MapHostFragment
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMainMenuBinding.bind(view)
@@ -23,16 +26,19 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         tabsNavController = host.navController
 
         binding.bottomBar.setOnItemSelectedListener { item ->
+            mapHost?.clearOverlaysAndObjectsKeepMap()
+
             when (item.itemId) {
-                R.id.tab_search      -> { tabsNavController.navigate(R.id.searchFragment); true }
+                R.id.tab_search    -> { tabsNavController.navigate(R.id.searchFragment); true }
                 R.id.tab_transit   -> { tabsNavController.navigate(R.id.transitFragment); true }
-                R.id.tab_navigator-> { tabsNavController.navigate(R.id.navigatorFragment); true }
+                R.id.tab_navigator -> { tabsNavController.navigate(R.id.navigatorFragment); true }
                 R.id.tab_friends   -> { tabsNavController.navigate(R.id.friendsFragment); true }
-                R.id.tab_profile -> { tabsNavController.navigate(R.id.profileFragment); true }
+                R.id.tab_profile   -> { tabsNavController.navigate(R.id.profileFragment); true }
                 else -> false
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

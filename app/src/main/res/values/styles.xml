@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="BottomNavTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/sb_sans</item>
+    </style>
+
+    <style name="BottomNav.ActiveIndicator.Transparent">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="android:width">0dp</item>
+        <item name="android:height">0dp</item>
+    </style>
+
+    <style name="BottomNav.ActiveIndicator" parent="@style/BottomNav.ActiveIndicator.Transparent" tools:ignore="ResourceCycle" />
+
+</resources>
+
+
+

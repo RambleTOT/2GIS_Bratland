@@ -21,13 +21,23 @@
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
+        android:background="#222222"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
         app:menu="@menu/menu_bottom"
         app:itemIconTint="@color/selector_bottom_nav_icon"
         app:itemTextColor="@color/elector_bottom_nav_text"
         app:labelVisibilityMode="labeled"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
+        app:itemIconSize="19dp"
+        app:itemIconPadding="0dp"
+        app:itemHorizontalTranslationEnabled="false"
+        app:itemRippleColor="@null"
+        app:itemActiveIndicatorStyle="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,6 +28,7 @@ import ru.dgis.sdk.routing.RouteEditorRouteParams
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.CarRouteSearchOptions
+import ru.gishackathon.app01.presentation.ProfileAppFragment
 import ru.gishackathon.app01.R
 import ru.gishackathon.app01.databinding.FragmentSearchBinding
 
@@ -36,132 +37,26 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private val vm: MapViewModel by viewModels()
-
-    private var mapObjectManager: MapObjectManager? = null
-    private var trafficSource: TrafficSource? = null
-    private var roadEventSource: RoadEventSource? = null
-
-    private var routeEditor: RouteEditor? = null
-    private var routeEditorSource: RouteEditorSource? = null
-
-    private var trafficAdded = false
-    private var roadEventsAdded = false
-
-    private val requestLocation = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { }
+    private val mapHost: MapHostFragment?
+        get() = requireActivity().supportFragmentManager.findFragmentById(R.id.mapHost) as? MapHostFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSearchBinding.bind(view)
 
-        viewLifecycleOwner.lifecycle.addObserver(binding.mapView)
-
-        binding.fabLayers.setOnClickListener {
-            binding.layersSheet.visibility =
-                if (binding.layersSheet.visibility == View.VISIBLE) View.GONE else View.VISIBLE
-        }
-
-        binding.mapView.getMapAsync { map ->
-            map.camera.position = CameraPosition(
-                point = GeoPoint(vm.state.value.centerLat, vm.state.value.centerLon),
-                zoom = Zoom(vm.state.value.zoom.toFloat())
-            )
-
-            mapObjectManager = MapObjectManager(map)
-            drawMarkers(vm.state.value.markers)
-
-            lifecycleScope.launchWhenStarted {
-                vm.state.collect { s -> applyLayers(map, s.showTraffic, s.showRoadEvents) }
-            }
-            binding.switchTraffic.setOnCheckedChangeListener { _, _ -> vm.onToggleTraffic() }
-            binding.switchRoadEvents.setOnCheckedChangeListener { _, _ -> vm.onToggleRoadEvents() }
-
-            binding.fabRoute.setOnClickListener { buildRoute(map) }
-        }
-
-        ensureLocationPermissions()
+        mapHost?.setMarkers(listOf(
+            55.760186 to 37.618711,
+            55.752425 to 37.613983,
+            55.747795 to 37.620528
+        ))
+        mapHost?.toggleTraffic(true)
     }
 
-    private fun drawMarkers(list: List<Pair<Double, Double>>) {
-        val mgr = mapObjectManager ?: return
-        val icon = imageFromResource(DGis.context(), android.R.drawable.ic_menu_mylocation)
-        val markers = list.map { (lat, lon) ->
-            Marker(
-                MarkerOptions(
-                    position = GeoPointWithElevation(GeoPoint(lat, lon)),
-                    icon = icon
-                )
-            )
-        }
-        mgr.removeAll()
-        mgr.addObjects(markers)
+    override fun onResume() {
+        super.onResume()
+        mapHost?.centerOnMyLocationOnce()
     }
 
-    private fun applyLayers(map: Map, traffic: Boolean, events: Boolean) {
-        if (traffic) {
-            if (trafficSource == null) trafficSource = TrafficSource(DGis.context())
-            if (!trafficAdded) {
-                map.addSource(trafficSource!!)
-                trafficAdded = true
-            }
-        } else if (trafficAdded) {
-            trafficSource?.let { map.removeSource(it) }
-            trafficAdded = false
-        }
-
-        if (events) {
-            if (roadEventSource == null) roadEventSource = RoadEventSource(DGis.context())
-            if (!roadEventsAdded) {
-                map.addSource(roadEventSource!!)
-                roadEventsAdded = true
-            }
-        } else if (roadEventsAdded) {
-            roadEventSource?.let { map.removeSource(it) }
-            roadEventsAdded = false
-        }
-    }
-
-    private fun buildRoute(map: Map) {
-        if (routeEditor == null) {
-            routeEditor = RouteEditor(DGis.context())
-            routeEditorSource = RouteEditorSource(DGis.context(), routeEditor!!)
-            map.addSource(routeEditorSource!!)
-        }
-
-        val start = RouteSearchPoint(coordinates = GeoPoint(55.759909, 37.618806))
-        val finish = RouteSearchPoint(coordinates = GeoPoint(55.752425, 37.613983))
-        val opts = RouteSearchOptions(car = CarRouteSearchOptions())
-
-        routeEditor?.setRouteParams(
-            RouteEditorRouteParams(
-                startPoint = start,
-                finishPoint = finish,
-                routeSearchOptions = opts
-            )
-        )
-    }
-
-    private fun ensureLocationPermissions() {
-        val ctx = requireContext()
-        val needFine = ContextCompat.checkSelfPermission(
-            ctx,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-        val needCoarse = ContextCompat.checkSelfPermission(
-            ctx,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-        if (needFine || needCoarse) {
-            requestLocation.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
