@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="your.package.ui.map.MapFragment"
+        android:label="Карта" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="your.package.ui.search.SearchFragment"
+        android:label="Поиск" />
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="your.package.ui.favorites.FavoritesFragment"
+        android:label="Избранное" />
+
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="your.package.ui.events.EventsFragment"
+        android:label="События" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="your.package.ui.settings.SettingsFragment"
+        android:label="Настройки" />
+</navigation>
