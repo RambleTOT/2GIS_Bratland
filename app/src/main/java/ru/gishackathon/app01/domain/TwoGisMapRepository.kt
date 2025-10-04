@@ -1,4 +1,4 @@
-package ramble.sokol.a2gisapp.domain
+package ramble.sokol.app01.domain
 
 interface TwoGisMapRepository {
     fun defaultMarkers(): List<Pair<Double, Double>>

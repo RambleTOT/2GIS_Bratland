@@ -1,4 +1,4 @@
-package ramble.sokol.a2gisapp
+package ru.gishackathon.app01
 
 import android.app.Application
 

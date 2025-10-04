@@ -1,4 +1,4 @@
-package ramble.sokol.a2gisapp.domain
+package ramble.sokol.app01.domain
 
 data class MapUiState(
     val centerLat: Double = 55.751244,

@@ -1,3 +1,5 @@
+package ru.gishackathon.app01.presentation
+
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,9 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import ramble.sokol.a2gisapp.R
-import ramble.sokol.a2gisapp.databinding.FragmentSearchBinding
-import ramble.sokol.a2gisapp.domain.MapViewModel
+import ramble.sokol.app01.domain.MapViewModel
+import ru.dgis.sdk.DGis
+import ru.dgis.sdk.DGis.context
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.CameraPosition
@@ -22,6 +24,12 @@ import ru.dgis.sdk.map.TrafficSource
 import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.routing.RouteEditor
 import ru.dgis.sdk.routing.RouteSearchPoint
+import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.imageFromResource
+import ru.dgis.sdk.routing.RouteEditorRouteParams
+import ru.gishackathon.app01.R
+import ru.gishackathon.app01.databinding.FragmentSearchBinding
+
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
@@ -37,49 +45,41 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private var routeEditor: RouteEditor? = null
     private var routeEditorSource: RouteEditorSource? = null
 
+    private var trafficAdded = false
+    private var roadEventsAdded = false
+
     private val requestLocation = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { /* no-op */ }
+    ) {  }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSearchBinding.bind(view)
 
-        // Подписываем MapView на жизненный цикл фрагмента
         viewLifecycleOwner.lifecycle.addObserver(binding.mapView)
 
-        // Переключатель видимости панели слоёв
         binding.fabLayers.setOnClickListener {
             binding.layersSheet.visibility =
                 if (binding.layersSheet.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
-
-        // Подключаем карту
         binding.mapView.getMapAsync { map ->
-            // начальная позиция камеры (можно получить из VM)
             map.camera.position = CameraPosition(
                 point = GeoPoint(vm.state.value.centerLat, vm.state.value.centerLon),
                 zoom = Zoom(vm.state.value.zoom.toFloat())
             )
 
-            // менеджер динамических объектов
             mapObjectManager = MapObjectManager(map)
 
-            // отрисуем маркеры из VM
             drawMarkers(vm.state.value.markers)
 
-            // логику UI состояния делаем реактивной
             lifecycleScope.launchWhenStarted {
                 vm.state.collect { s ->
                     applyLayers(map, s.showTraffic, s.showRoadEvents)
                 }
             }
-
-            // свитчи меняют стейт во VM
             binding.switchTraffic.setOnCheckedChangeListener { _, _ -> vm.onToggleTraffic() }
             binding.switchRoadEvents.setOnCheckedChangeListener { _, _ -> vm.onToggleRoadEvents() }
 
-            // построение маршрута A→B
             binding.fabRoute.setOnClickListener { buildRoute(map) }
         }
 
@@ -88,43 +88,63 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun drawMarkers(list: List<Pair<Double, Double>>) {
         val mgr = mapObjectManager ?: return
+        val icon = imageFromResource(context(), android.R.drawable.ic_menu_mylocation)
         val markers = list.map { (lat, lon) ->
-            Marker(MarkerOptions(position = GeoPointWithElevation(lat, lon)))
+            Marker(
+                MarkerOptions(
+                    position = GeoPointWithElevation(GeoPoint(lat, lon)),
+                    icon = icon
+                )
+            )
         }
-        mgr.clear()
-        mgr.addObjects(markers) // пачкой — быстрее
+        mgr.removeAll()
+        mgr.addObjects(markers)
     }
 
     private fun applyLayers(map: Map, traffic: Boolean, events: Boolean) {
         if (traffic) {
-            if (trafficSource == null) trafficSource = TrafficSource(requireContext())
-            if (!map.getSources().contains(trafficSource)) map.addSource(trafficSource!!)
-        } else {
+            if (trafficSource == null) trafficSource = TrafficSource(DGis.context())
+            if (!trafficAdded) {
+                map.addSource(trafficSource!!)
+                trafficAdded = true
+            }
+        } else if (trafficAdded) {
             trafficSource?.let { map.removeSource(it) }
+            trafficAdded = false
         }
 
         if (events) {
-            if (roadEventSource == null) roadEventSource = RoadEventSource(requireContext())
-            if (!map.getSources().contains(roadEventSource)) map.addSource(roadEventSource!!)
-        } else {
+            if (roadEventSource == null) roadEventSource = RoadEventSource(context())
+            if (!roadEventsAdded) {
+                map.addSource(roadEventSource!!)
+                roadEventsAdded = true
+            }
+        } else if (roadEventsAdded) {
             roadEventSource?.let { map.removeSource(it) }
+            roadEventsAdded = false
         }
     }
 
+
     private fun buildRoute(map: Map) {
         if (routeEditor == null) {
-            routeEditor = RouteEditor(requireContext())
-            routeEditorSource = RouteEditorSource(requireContext(), routeEditor!!)
+            routeEditor = RouteEditor(context())
+            routeEditorSource = RouteEditorSource(context(), routeEditor!!)
             map.addSource(routeEditorSource!!)
         }
-        // Пример: произвольные точки A→B
+
+        val start = RouteSearchPoint(coordinates = GeoPoint(55.759909, 37.618806))
+        val finish = RouteSearchPoint(coordinates = GeoPoint(55.752425, 37.613983))
+
         routeEditor?.setRouteParams(
-            RouteParams(
-                startPoint = RouteSearchPoint(GeoPoint(55.759909, 37.618806)),
-                finishPoint = RouteSearchPoint(GeoPoint(55.752425, 37.613983))
+            RouteEditorRouteParams(
+                startPoint = start,
+                finishPoint = finish,
+                routeSearchOptions = TODO()
             )
         )
     }
+
 
     private fun ensureLocationPermissions() {
         val ctx = requireContext()

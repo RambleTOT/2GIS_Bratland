@@ -5,26 +5,26 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="ramble.sokol.a2gisapp.presentation.SearchFragment"
+        android:name="ru.gishackathon.app01.presentation.SearchFragment"
         android:label="Карта" />
 
     <fragment
         android:id="@+id/transitFragment"
-        android:name="ramble.sokol.a2gisapp.presentation.TransitFragment"
+        android:name="ru.gishackathon.app01.presentation.TransitFragment"
         android:label="Поиск" />
 
     <fragment
         android:id="@+id/navigatorFragment"
-        android:name="ramble.sokol.a2gisapp.presentation.NavigatorFragment"
+        android:name="ru.gishackathon.app01.presentation.NavigatorFragment"
         android:label="Избранное" />
 
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="ramble.sokol.a2gisapp.presentation.FriendsFragment"
+        android:name="ru.gishackathon.app01.presentation.FriendsFragment"
         android:label="События" />
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="ramble.sokol.a2gisapp.presentation.ProfileFragment"
+        android:name="ru.gishackathon.app01.presentation.ProfileFragment"
         android:label="Настройки" />
 </navigation>

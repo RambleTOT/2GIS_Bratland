@@ -1,4 +1,4 @@
-package ramble.sokol.a2gisapp.domain
+package ramble.sokol.app01.domain
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

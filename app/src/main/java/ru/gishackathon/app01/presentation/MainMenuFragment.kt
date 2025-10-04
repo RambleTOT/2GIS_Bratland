@@ -1,10 +1,12 @@
+package ru.gishackathon.app01.presentation
+
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import ramble.sokol.a2gisapp.R
-import ramble.sokol.a2gisapp.databinding.FragmentMainMenuBinding
+import ru.gishackathon.app01.R
+import ru.gishackathon.app01.databinding.FragmentMainMenuBinding
 
 class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 

@@ -1,4 +1,4 @@
-package ramble.sokol.a2gisapp.presentation
+package ru.gishackathon.app01.presentation
 
 import android.os.Bundle
 import android.os.Handler
@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
-import ramble.sokol.a2gisapp.R
-import ramble.sokol.a2gisapp.databinding.FragmentSplashScreenBinding
+import ru.gishackathon.app01.R
+import ru.gishackathon.app01.databinding.FragmentSplashScreenBinding
 
 class SplashScreenFragment : Fragment() {
 

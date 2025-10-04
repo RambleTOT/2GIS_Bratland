@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "ramble.sokol.a2gisapp"
+    namespace = "ru.gishackathon.app01"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "ru.2gishackathon.app01"
+        applicationId = "ru.gishackathon.app01"
         minSdk = 29
         targetSdk = 36
         versionCode = 1

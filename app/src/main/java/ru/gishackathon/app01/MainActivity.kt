@@ -1,13 +1,12 @@
-package ramble.sokol.a2gisapp
+package ru.gishackathon.app01
 
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import ramble.sokol.a2gisapp.presentation.SplashScreenFragment
+import ru.gishackathon.app01.R
+import ru.gishackathon.app01.presentation.SplashScreenFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
