@@ -11,25 +11,25 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import ramble.sokol.app01.domain.MapViewModel
 import ru.dgis.sdk.DGis
-import ru.dgis.sdk.DGis.context
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.CameraPosition
+import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MapObjectManager
 import ru.dgis.sdk.map.Marker
 import ru.dgis.sdk.map.MarkerOptions
+import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.RoadEventSource
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.TrafficSource
-import ru.dgis.sdk.map.Zoom
-import ru.dgis.sdk.routing.RouteEditor
-import ru.dgis.sdk.routing.RouteSearchPoint
-import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.imageFromResource
+import ru.dgis.sdk.routing.RouteEditor
 import ru.dgis.sdk.routing.RouteEditorRouteParams
+import ru.dgis.sdk.routing.RouteSearchPoint
+import ru.dgis.sdk.routing.RouteSearchOptions
+import ru.dgis.sdk.routing.CarRouteSearchOptions
 import ru.gishackathon.app01.R
 import ru.gishackathon.app01.databinding.FragmentSearchBinding
-
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
@@ -50,7 +50,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private val requestLocation = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) {  }
+    ) { }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,6 +62,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             binding.layersSheet.visibility =
                 if (binding.layersSheet.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
+
         binding.mapView.getMapAsync { map ->
             map.camera.position = CameraPosition(
                 point = GeoPoint(vm.state.value.centerLat, vm.state.value.centerLon),
@@ -69,13 +70,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             )
 
             mapObjectManager = MapObjectManager(map)
-
             drawMarkers(vm.state.value.markers)
 
             lifecycleScope.launchWhenStarted {
-                vm.state.collect { s ->
-                    applyLayers(map, s.showTraffic, s.showRoadEvents)
-                }
+                vm.state.collect { s -> applyLayers(map, s.showTraffic, s.showRoadEvents) }
             }
             binding.switchTraffic.setOnCheckedChangeListener { _, _ -> vm.onToggleTraffic() }
             binding.switchRoadEvents.setOnCheckedChangeListener { _, _ -> vm.onToggleRoadEvents() }
@@ -88,7 +86,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun drawMarkers(list: List<Pair<Double, Double>>) {
         val mgr = mapObjectManager ?: return
-        val icon = imageFromResource(context(), android.R.drawable.ic_menu_mylocation)
+        val icon = imageFromResource(DGis.context(), android.R.drawable.ic_menu_mylocation)
         val markers = list.map { (lat, lon) ->
             Marker(
                 MarkerOptions(
@@ -114,7 +112,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         if (events) {
-            if (roadEventSource == null) roadEventSource = RoadEventSource(context())
+            if (roadEventSource == null) roadEventSource = RoadEventSource(DGis.context())
             if (!roadEventsAdded) {
                 map.addSource(roadEventSource!!)
                 roadEventsAdded = true
@@ -125,40 +123,43 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
-
     private fun buildRoute(map: Map) {
         if (routeEditor == null) {
-            routeEditor = RouteEditor(context())
-            routeEditorSource = RouteEditorSource(context(), routeEditor!!)
+            routeEditor = RouteEditor(DGis.context())
+            routeEditorSource = RouteEditorSource(DGis.context(), routeEditor!!)
             map.addSource(routeEditorSource!!)
         }
 
         val start = RouteSearchPoint(coordinates = GeoPoint(55.759909, 37.618806))
         val finish = RouteSearchPoint(coordinates = GeoPoint(55.752425, 37.613983))
+        val opts = RouteSearchOptions(car = CarRouteSearchOptions())
 
         routeEditor?.setRouteParams(
             RouteEditorRouteParams(
                 startPoint = start,
                 finishPoint = finish,
-                routeSearchOptions = TODO()
+                routeSearchOptions = opts
             )
         )
     }
 
-
     private fun ensureLocationPermissions() {
         val ctx = requireContext()
         val needFine = ContextCompat.checkSelfPermission(
-            ctx, Manifest.permission.ACCESS_FINE_LOCATION
+            ctx,
+            Manifest.permission.ACCESS_FINE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED
         val needCoarse = ContextCompat.checkSelfPermission(
-            ctx, Manifest.permission.ACCESS_COARSE_LOCATION
+            ctx,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED
         if (needFine || needCoarse) {
-            requestLocation.launch(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ))
+            requestLocation.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
         }
     }
 

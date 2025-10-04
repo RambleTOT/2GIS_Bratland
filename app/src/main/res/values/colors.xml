@@ -3,4 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="color_background">#262626</color>
+    <color name="color_background_navbar">#222222</color>
+    <color name="bottom_nav_selected">#2DC04B</color>
+    <color name="bottom_nav_unselected">#898989</color>
+
 </resources>

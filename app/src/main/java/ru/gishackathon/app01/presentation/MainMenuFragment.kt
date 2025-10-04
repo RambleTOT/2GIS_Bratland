@@ -19,7 +19,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMainMenuBinding.bind(view)
 
-        val host = childFragmentManager.findFragmentById(R.id.tabsNavHost) as NavHostFragment
+        val host = childFragmentManager.findFragmentById(R.id.mainNavHost) as NavHostFragment
         tabsNavController = host.navController
 
         binding.bottomBar.setOnItemSelectedListener { item ->

@@ -1,6 +1,8 @@
+<!-- res/layout/fragment_search.xml -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,55 +11,205 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-
+    <!-- FAB для построения маршрута -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabRoute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_map"
+        android:src="@drawable/ic_baseline_directions_24"
+        app:backgroundTint="@color/color_background"
         app:layout_anchor="@id/mapView"
-        app:layout_anchorGravity="bottom|end" />
+        app:layout_anchorGravity="top|start"
+        android:layout_margin="16dp" />
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/layersSheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        android:padding="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switchTraffic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Показать пробки" />
-
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switchRoadEvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Показать дорожные события" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
+    <!-- FAB для открытия панели слоёв -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabLayers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="88dp"
-        app:srcCompat="@android:drawable/ic_menu_sort_by_size"
-        app:layout_anchor="@id/mapView"
-        app:layout_anchorGravity="bottom|start" />
+        android:src="@drawable/ic_layers"
+        app:backgroundTint="@color/cardview_light_background"
+        android:layout_gravity="end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="280dp"/>
 
+    <LinearLayout
+        android:id="@+id/layersSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_bottomsheet"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:layout_gravity="bottom">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchTraffic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пробки" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchRoadEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="События на дорогах" />
+    </LinearLayout>
+
+    <!-- Твой BottomSheet как раньше -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@android:color/transparent"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="96dp"
+        app:behavior_draggable="true"
+        app:behavior_fitToContents="false"
+        app:behavior_halfExpandedRatio="0.45">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorSurface">
+
+            <LinearLayout
+                android:id="@+id/handleArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <View
+                    android:id="@+id/handle"
+                    android:layout_width="36dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/shape_handle" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:id="@+id/tilSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+<!--                        app:startIconDrawable="@drawable/ic_search"-->
+
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Поиск"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMenu"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="12dp"
+                        app:icon="@drawable/icon_spash_2gis"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/quickActions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBookmarks"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Избранное"
+                        app:icon="@drawable/icon_spash_2gis"
+                        app:iconPadding="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnHome"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Домой"
+                        app:icon="@drawable/icon_spash_2gis"
+                        app:iconPadding="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWork"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="На работу"
+                        app:icon="@drawable/icon_spash_2gis"
+                        app:iconPadding="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollContent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                app:layout_constraintTop_toBottomOf="@id/handleArea"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvSectionTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Советы к месту"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"
+                        android:nestedScrollingEnabled="false" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
