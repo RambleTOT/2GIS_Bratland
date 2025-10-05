@@ -22,6 +22,7 @@ class MapHostFragment : Fragment() {
     private var map: DgisMap? = null
 
     private var objectManager: MapObjectManager? = null
+    private var myLocationManager: MapObjectManager? = null  // ТОЛЬКО маркер текущего местоположения
     private var myLocationMarker: Marker? = null
 
     private var trafficSource: TrafficSource? = null
@@ -37,7 +38,7 @@ class MapHostFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mapView = MapView(requireContext())
-        viewLifecycleOwnerLiveData.observe(this) { owner -> owner?.lifecycle?.addObserver(mapView) }
+        viewLifecycleOwnerLiveData.observe(requireActivity()) { owner -> owner?.lifecycle?.addObserver(mapView) }
         return mapView
     }
 
@@ -45,11 +46,12 @@ class MapHostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mapView.getMapAsync { m ->
             map = m
-            // дефолтная камера на город, затем переведём на геопозицию
-            m.camera.position = CameraPosition(point = GeoPoint(55.751244, 37.618423), zoom = Zoom(
-                14.0F
-            ))
+            m.camera.position = CameraPosition(
+                point = GeoPoint(55.751244, 37.618423),
+                zoom = Zoom(14.0f)
+            )
             objectManager = MapObjectManager(m)
+            myLocationManager = MapObjectManager(m)
             startMyLocation()
         }
     }
@@ -60,26 +62,8 @@ class MapHostFragment : Fragment() {
             Marker(MarkerOptions(position = GeoPointWithElevation(GeoPoint(lat, lon)), icon = icon))
         }
         mgr.removeAll()
-        myLocationMarker = null
         mgr.addObjects(items)
-        // при необходимости вернём "моё местоположение"
         ensureMyLocationRetained()
-    }
-
-    fun toggleTraffic(enabled: Boolean) {
-        val m = map ?: return
-        if (enabled) {
-            if (trafficSource == null) trafficSource = TrafficSource(DGis.context())
-            m.addSource(trafficSource!!)
-        } else trafficSource?.let { m.removeSource(it) }
-    }
-
-    fun toggleRoadEvents(enabled: Boolean) {
-        val m = map ?: return
-        if (enabled) {
-            if (roadEventSource == null) roadEventSource = RoadEventSource(DGis.context())
-            m.addSource(roadEventSource!!)
-        } else roadEventSource?.let { m.removeSource(it) }
     }
 
     fun buildRoute(start: GeoPoint, finish: GeoPoint) {
@@ -129,13 +113,18 @@ class MapHostFragment : Fragment() {
 
 
     private fun placeOrMoveMyLocation(point: GeoPoint) {
-        val mgr = objectManager ?: return
+        val mgr = myLocationManager ?: return
         val icon = imageFromResource(DGis.context(), R.drawable.icon_my_location)
         val newMarker = Marker(MarkerOptions(position = GeoPointWithElevation(point), icon = icon))
-        myLocationMarker?.let { mgr.removeObject(it) }
+
+        myLocationMarker?.let { old ->
+            // убираем старый только из myLocationManager
+            mgr.removeObject(old)
+        }
         myLocationMarker = newMarker
         mgr.addObject(newMarker)
     }
+
 
 
     fun centerOnMyLocationOnce() {

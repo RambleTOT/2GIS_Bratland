@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import ramble.sokol.app01.domain.MapViewModel
 import ru.dgis.sdk.DGis
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
@@ -44,13 +43,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSearchBinding.bind(view)
-
-        mapHost?.setMarkers(listOf(
-            55.760186 to 37.618711,
-            55.752425 to 37.613983,
-            55.747795 to 37.620528
-        ))
-        mapHost?.toggleTraffic(true)
 
         binding.featureSloi.setOnClickListener {
             // здесь ебать важно будет

@@ -3,4 +3,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_input_search">Поиск</string>
     <string name="advice_place_title">Совет к месту</string>
+    <string name="advice_title">Раздел Советы</string>
+    <string name="navigator_title">Раздел Навигатор</string>
+    <string name="frineds_title">Раздел Друзья</string>
+    <string name="text_Zaglushka">Данный раздел уже хорошо реализован в основном приложении 2ГИС</string>
 </resources>
