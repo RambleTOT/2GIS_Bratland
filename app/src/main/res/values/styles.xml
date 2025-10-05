@@ -12,6 +12,36 @@
 
     <style name="BottomNav.ActiveIndicator" parent="@style/BottomNav.ActiveIndicator.Transparent" tools:ignore="ResourceCycle" />
 
+    <style name="CustomTextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <item name="hintTextColor">@color/text_hint_color</item>
+        <item name="android:textColorHint">@color/text_hint_color</item>
+        <item name="hintTextAppearance">@style/CustomHintTextAppearance</item>
+        <item name="boxStrokeColor">@color/black</item>
+        <item name="android:gravity">center_vertical</item> <!-- Выравнивание текста по центру -->
+        <item name="android:paddingTop">0dp</item> <!-- Убираем верхний отступ -->
+        <item name="android:paddingBottom">0dp</item> <!-- Убираем нижний отступ -->
+        <item name="android:paddingStart">0dp</item> <!-- Убираем начальный отступ -->
+        <item name="android:paddingEnd">0dp</item> <!-- Убираем конечный отступ -->
+
+    </style>
+
+    <style name="CustomHintTextAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">15sp</item> <!-- Размер текста -->
+        <item name="android:textColor">@color/text_hint_color</item> <!-- Цвет текста -->
+        <item name="fontFamily">@font/sb_sans</item> <!-- Кастомный шрифт -->
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:includeFontPadding">false</item> <!-- Убираем внутренние отступы шрифта -->
+    </style>
+
 </resources>
 
 

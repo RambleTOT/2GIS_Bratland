@@ -15,7 +15,7 @@
         android:src="@drawable/icon_profile_search"
         android:layout_gravity="top|start"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="32dp"/>
 
     <ImageButton
         android:id="@+id/featureSloi"
@@ -25,7 +25,7 @@
         android:src="@drawable/icon_sloi_search"
         android:layout_gravity="top|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="32dp"/>
 
 
     <LinearLayout
@@ -51,20 +51,21 @@
             android:text="События на дорогах" />
     </LinearLayout>
 
-    <!-- Твой BottomSheet как раньше -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:backgroundTint="@android:color/transparent"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="16dp"
         app:cardUseCompatPadding="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_peekHeight="96dp"
         app:behavior_draggable="true"
+        android:elevation="0dp"
         app:behavior_fitToContents="false"
-        app:behavior_halfExpandedRatio="0.45">
+        app:behavior_halfExpandedRatio="0.45"
+        android:layout_marginBottom="-40dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -76,9 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 android:paddingTop="8dp"
+                android:background="@color/color_background"
                 android:paddingBottom="8dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -93,36 +93,66 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="16dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_marginHorizontal="16dp"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
-                        android:id="@+id/tilSearch"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-<!--                        app:startIconDrawable="@drawable/ic_search"-->
-
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etSearch"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="Поиск"
-                            android:singleLine="true" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnMenu"
-                        style="@style/Widget.Material3.Button.Icon"
-                        android:layout_width="48dp"
+                    <LinearLayout
+                        android:id="@+id/searchContainer"
+                        android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_search_input"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp">
+
+                        <ImageView
+                            android:id="@+id/iconSearch"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_search_white_24" />
+
+                        <EditText
+                            android:id="@+id/etSearch"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="@string/text_input_search"
+                            android:textColor="@android:color/white"
+                            android:textColorHint="@color/text_hint_color"
+                            android:gravity="center_vertical"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/sb_sans"
+                            android:paddingVertical="0dp"
+                            android:inputType="text" />
+
+                        <ImageView
+                            android:id="@+id/iconMic"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_mic_white_24" />
+
+                    </LinearLayout>
+
+
+
+                    <ImageButton
+                        android:id="@+id/icon_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@null"
+                        android:gravity="start"
+                        android:layout_weight="0"
                         android:layout_marginStart="12dp"
-                        app:icon="@drawable/icon_spash_2gis"
-                        app:iconGravity="textStart" />
+                        android:src="@drawable/icon_search_end"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -130,41 +160,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnBookmarks"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:text="Избранное"
-                        app:icon="@drawable/icon_spash_2gis"
-                        app:iconPadding="8dp" />
+                        <ImageButton
+                            android:id="@+id/icon_sheet_first"
+                            android:layout_width="wrap_content"
+                            android:layout_height="42dp"
+                            android:background="@null"
+                            android:gravity="start"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/icon_sheet_first"/>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnHome"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:text="Домой"
-                        app:icon="@drawable/icon_spash_2gis"
-                        app:iconPadding="8dp" />
+                        <ImageButton
+                            android:id="@+id/icon_sheet_home"
+                            android:layout_width="wrap_content"
+                            android:layout_height="42dp"
+                            android:background="@null"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/icon_sheet_to_home" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnWork"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:text="На работу"
-                        app:icon="@drawable/icon_spash_2gis"
-                        app:iconPadding="8dp" />
+                            <ImageButton
+                                android:id="@+id/icon_sheet_work"
+                                android:layout_width="wrap_content"
+                                android:layout_height="42dp"
+                                android:background="@null"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/icon_sheet_to_work" />
+
+                            <ImageButton
+                                android:id="@+id/icon_sheet_last"
+                                android:layout_width="wrap_content"
+                                android:layout_height="42dp"
+                                android:background="@null"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/icon_sheet_last" />
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <androidx.core.widget.NestedScrollView
@@ -172,6 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:fillViewport="true"
+                android:background="@color/background_sheet"
                 app:layout_constraintTop_toBottomOf="@id/handleArea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -181,28 +216,71 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:layout_marginTop="20dp"
                     android:paddingBottom="24dp">
 
-                    <TextView
-                        android:id="@+id/tvSectionTitle"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Советы к месту"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+                        android:orientation="vertical">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvCards"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:overScrollMode="never"
-                        android:nestedScrollingEnabled="false" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_weight="2">
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="24dp" />
+                            <ImageButton
+                                android:id="@+id/icon_advice_1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:layout_weight="1"
+                                android:adjustViewBounds="true"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/icon_peace_place_1" />
+
+                            <ImageButton
+                                android:id="@+id/icon_advice_2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:adjustViewBounds="true"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp"
+                                android:src="@drawable/icon_peace_place_2" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_weight="2"
+                            android:layout_marginTop="8dp">
+
+                            <ImageButton
+                                android:id="@+id/icon_advice_3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/icon_peace_place_3" />
+
+                            <ImageButton
+                                android:id="@+id/icon_advice_4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp"
+                                android:src="@drawable/icon_peace_place_4" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>

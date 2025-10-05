@@ -6,5 +6,7 @@
     <color name="color_background_navbar">#222222</color>
     <color name="bottom_nav_selected">#2DC04B</color>
     <color name="bottom_nav_unselected">#898989</color>
-
+    <color name="text_hint_color">#ADADAD</color>
+    <color name="background_edit_text">#ADADAD</color>
+    <color name="background_sheet">#141414</color>
 </resources>
