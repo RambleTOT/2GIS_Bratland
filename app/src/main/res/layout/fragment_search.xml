@@ -400,7 +400,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#2B2B2B"
-            android:paddingBottom="24dp">
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -541,7 +541,7 @@
                     <TextView
                         android:text="Маршруты будут строиться по тихим\nи малолюдным улицам"
                         android:textColor="#B3FFFFFF"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/sb_sans"
                         android:layout_width="wrap_content"

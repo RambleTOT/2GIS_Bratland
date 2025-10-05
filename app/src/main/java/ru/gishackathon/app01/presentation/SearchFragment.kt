@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -71,6 +72,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             })
         }
+
+        binding.iconOutFeature.setOnClickListener { openAccessibilityModal() }
 
         val modal = binding.accessibilityModal
         accessibilityBehavior = BottomSheetBehavior.from(modal).apply {
@@ -173,4 +176,23 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onDestroyView()
         _binding = null
     }
+
+    fun openAccessibilityModal() {
+        val behavior = BottomSheetBehavior.from(binding.accessibilityModal)
+        binding.dimView.isVisible = true
+        binding.dimView.setOnClickListener { closeAccessibilityModal() }
+        binding.btnCloseAccessibility.setOnClickListener { closeAccessibilityModal() }
+
+        behavior.isDraggable = true
+        behavior.skipCollapsed = true
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    fun closeAccessibilityModal() {
+        binding.dimView.isVisible = false
+        BottomSheetBehavior.from(binding.accessibilityModal).state =
+            BottomSheetBehavior.STATE_HIDDEN
+    }
+
+
 }

@@ -1,14 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootTransit"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.TransitFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <LinearLayout
+        android:id="@+id/transitPanel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_surface_top_16"
+        android:clipToOutline="true"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_start_pin_20"/>
+
+            <EditText
+                android:id="@+id/etFrom"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="@string/my_location"
+                android:singleLine="true"
+                android:background="@null"
+                android:textColor="@android:color/white"
+                android:textColorHint="#ADADAD"
+                android:paddingStart="12dp"
+                android:imeOptions="actionNone"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
+                android:longClickable="false"
+                android:cursorVisible="false"
+                android:inputType="none"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_target_pin_20"/>
+
+            <EditText
+                android:id="@+id/etTo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Куда поедем?"
+                android:singleLine="true"
+                android:background="@null"
+                android:textColor="@android:color/white"
+                android:textColorHint="#ADADAD"
+                android:paddingStart="12dp"
+                android:imeOptions="actionSearch"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTransit"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text=" "
+                app:icon="@drawable/ic_bus_24"
+                app:iconPadding="0dp"
+                app:iconGravity="textStart"
+                android:background="@drawable/bg_mode_selector"/>
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWalk"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text=""
+                app:icon="@drawable/ic_walk_24"
+                app:iconPadding="0dp"
+                app:iconGravity="textStart"
+                android:background="@drawable/bg_mode_selector"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/quickActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:weightSum="4"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="horizontal">
+
+
+                <ImageButton
+                    android:id="@+id/icon_sheet_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:background="@null"
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_sheet_first"/>
+
+                <ImageButton
+                    android:id="@+id/icon_sheet_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:background="@null"
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_sheet_to_home" />
+
+                <ImageButton
+                    android:id="@+id/icon_sheet_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:background="@null"
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_sheet_to_work" />
+
+                <ImageButton
+                    android:id="@+id/icon_out_feature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_sheet_last"/>
+
+    </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

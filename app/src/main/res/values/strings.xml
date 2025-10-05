@@ -7,4 +7,6 @@
     <string name="navigator_title">Раздел Навигатор</string>
     <string name="frineds_title">Раздел Друзья</string>
     <string name="text_Zaglushka">Данный раздел уже хорошо реализован в основном приложении 2ГИС</string>
+    <string name="my_location">Мое местоположение</string>
+    <string name="from_text">Откуда</string>
 </resources>

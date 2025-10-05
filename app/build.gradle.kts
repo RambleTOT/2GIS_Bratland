@@ -13,7 +13,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -54,5 +53,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.sdk.full)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.conscrypt:conscrypt-android:2.5.3")
 
 }
