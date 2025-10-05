@@ -130,12 +130,13 @@ class MapHostFragment : Fragment() {
 
     private fun placeOrMoveMyLocation(point: GeoPoint) {
         val mgr = objectManager ?: return
-        val icon = imageFromResource(DGis.context(), R.drawable.icon_my_place)
+        val icon = imageFromResource(DGis.context(), R.drawable.icon_my_location)
         val newMarker = Marker(MarkerOptions(position = GeoPointWithElevation(point), icon = icon))
         myLocationMarker?.let { mgr.removeObject(it) }
         myLocationMarker = newMarker
         mgr.addObject(newMarker)
     }
+
 
     fun centerOnMyLocationOnce() {
         if (!centeredOnUser) {

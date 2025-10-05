@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -50,6 +51,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             55.747795 to 37.620528
         ))
         mapHost?.toggleTraffic(true)
+
+        binding.featureSloi.setOnClickListener {
+            // здесь ебать важно будет
+        }
+
+        binding.iconEnd.setOnClickListener {
+            Toast.makeText(requireActivity(), "Это уже есть в приложении 2ГИС и в MVP нашего решения не входит", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onResume() {
