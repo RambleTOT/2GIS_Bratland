@@ -28,26 +28,25 @@
         android:layout_marginTop="32dp"/>
 
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:backgroundTint="@android:color/transparent"
-        app:cardCornerRadius="16dp"
-        app:cardUseCompatPadding="false"
+        android:orientation="vertical"
+        android:background="@drawable/bg_surface_top_16"
+        android:elevation="2dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_peekHeight="96dp"
         app:behavior_draggable="true"
-        android:elevation="0dp"
+        android:clipToOutline="true"
         app:behavior_fitToContents="false"
-        app:behavior_halfExpandedRatio="0.45"
-        android:layout_marginBottom="-40dp">
+        app:behavior_halfExpandedRatio="0.45">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/colorSurface">
+            android:background="@android:color/transparent"> >
 
             <LinearLayout
                 android:id="@+id/handleArea"
@@ -163,12 +162,12 @@
                             android:src="@drawable/icon_sheet_to_home" />
 
                         <ImageButton
-                                android:id="@+id/icon_sheet_work"
-                                android:layout_width="wrap_content"
-                                android:layout_height="42dp"
-                                android:background="@null"
-                                android:layout_weight="2"
-                                android:src="@drawable/icon_sheet_to_work" />
+                            android:id="@+id/icon_sheet_work"
+                            android:layout_width="wrap_content"
+                            android:layout_height="42dp"
+                            android:background="@null"
+                            android:layout_weight="2"
+                            android:src="@drawable/icon_sheet_to_work" />
 
                     </LinearLayout>
 
@@ -217,68 +216,349 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="8dp">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:paddingHorizontal="16dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <ImageButton
+                            android:id="@+id/icon_advice_1"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_weight="2">
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:adjustViewBounds="true"
+                            android:layout_marginEnd="4dp"
+                            android:src="@drawable/icon_peace_place_1" />
 
-                            <ImageButton
-                                android:id="@+id/icon_advice_1"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@null"
-                                android:layout_weight="1"
-                                android:adjustViewBounds="true"
-                                android:layout_marginEnd="4dp"
-                                android:src="@drawable/icon_peace_place_1" />
-
-                            <ImageButton
-                                android:id="@+id/icon_advice_2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:adjustViewBounds="true"
-                                android:layout_weight="1"
-                                android:layout_marginStart="4dp"
-                                android:src="@drawable/icon_peace_place_2" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <ImageButton
+                            android:id="@+id/icon_advice_2"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_weight="2"
-                            android:layout_marginTop="8dp">
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:adjustViewBounds="true"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/icon_peace_place_2" />
+                    </LinearLayout>
 
-                            <ImageButton
-                                android:id="@+id/icon_advice_3"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@null"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="4dp"
-                                android:src="@drawable/icon_peace_place_3" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:paddingHorizontal="16dp">
 
-                            <ImageButton
-                                android:id="@+id/icon_advice_4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:layout_weight="1"
-                                android:layout_marginStart="4dp"
-                                android:src="@drawable/icon_peace_place_4" />
+                        <ImageButton
+                            android:id="@+id/icon_advice_3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:adjustViewBounds="true"
+                            android:layout_marginEnd="4dp"
+                            android:src="@drawable/icon_peace_place_3" />
 
-                        </LinearLayout>
-
+                        <ImageButton
+                            android:id="@+id/icon_advice_4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:adjustViewBounds="true"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/icon_peace_place_4" />
                     </LinearLayout>
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dimView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="6dp"/>
+
+    <LinearLayout
+        android:id="@+id/layersModal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@drawable/bg_modal_top_16"
+        android:elevation="12dp"
+        android:clipToOutline="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="0dp"
+        app:behavior_draggable="true"
+        app:behavior_fitToContents="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#262626">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/tvLayersTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Слои на карте"
+                    android:textColor="@android:color/white"
+                    android:textSize="21sp"
+                    android:fontFamily="@font/sb_sans_medium"/>
+
+                <ImageButton
+                    android:id="@+id/btnCloseLayers"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/bg_circle_gray_40"
+                    android:src="@drawable/ic_close_24"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rowNoise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="24dp"
+                android:layout_marginHorizontal="20dp">
+
+                <ImageView
+                    android:id="@+id/icNoise"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_headphones_24"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Шумовое загрязнение"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rowEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="24dp"
+                android:layout_marginHorizontal="20dp"
+                android:paddingBottom="20dp">
+
+                <ImageView
+                    android:id="@+id/icEvents"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_minus_in_circle_24"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Общественные мероприятия"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/accessibilityModal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@drawable/bg_modal_top_16"
+        android:elevation="12dp"
+        android:clipToOutline="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="0dp"
+        app:behavior_draggable="true"
+        app:behavior_fitToContents="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#2B2B2B"
+            android:paddingBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/tvAccessibilityTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Настройки доступности"
+                    android:textColor="@android:color/white"
+                    android:textSize="21sp"
+                    android:fontFamily="@font/sb_sans_medium"/>
+
+                <ImageButton
+                    android:id="@+id/btnCloseAccessibility"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/bg_circle_gray_40"
+                    android:src="@drawable/ic_close_24"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginHorizontal="24dp"
+                android:text="Маршруты сенсорной безопасности"
+                android:textColor="@android:color/white"
+                android:textSize="19sp"
+                android:fontFamily="@font/sb_sans_medium"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="Избегать шума"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:fontFamily="@font/sb_sans_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Избегать шумные участки\nпри построении маршрутов"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/sb_sans"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swAvoidNoise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="Избегать мероприятия"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:fontFamily="@font/sb_sans_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Избегать уличные мероприятия\nпри построении маршрутов"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="15sp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/sb_sans"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swAvoidEvents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="24dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="Избегать загруженные улицы"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:fontFamily="@font/sb_sans_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Маршруты будут строиться по тихим\nи малолюдным улицам"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="15sp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/sb_sans"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swAvoidCrowded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
