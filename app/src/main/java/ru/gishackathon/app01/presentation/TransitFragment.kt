@@ -27,7 +27,7 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
     private val mapHost: MapHostFragment?
         get() = requireActivity().supportFragmentManager.findFragmentById(R.id.mapHost) as? MapHostFragment
 
-    // start = моё местоположение; dest = адрес из инпута
+
     private var startPoint: GeoPoint? = null
     private var destPoint: GeoPoint?  = null
 
@@ -37,18 +37,16 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
 
     private val dgisApiKey = "c4ef43c4-dc29-4f58-beb1-482f41e0a34e"
 
-    // HTTP клиент с правильной TLS-конфигурацией
+
     private val http by lazy { TlsFix.buildHttp() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTransitBinding.bind(view)
 
-        // Обновим провайдеры безопасности сразу
         TlsFix.installGmsProvider(requireContext().applicationContext)
         TlsFix.tryInstallConscrypt()
 
-        // "Откуда" — только отображаем
         binding.etFrom.apply {
             setText(getString(R.string.my_location))
             isFocusable = false
@@ -57,12 +55,10 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
             isLongClickable = false
         }
 
-        // Тянем моё местоположение
         mapHost?.centerOnMyLocationOnce()
         startPoint = mapHost?.getMyLocation()
         Log.d(TAG, "Initial startPoint: $startPoint")
 
-        // Режимы
         binding.btnTransit.setOnClickListener {
             binding.btnTransit.isSelected = true
             binding.btnWalk.isSelected = false
@@ -77,7 +73,6 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
         }
         binding.btnTransit.callOnClick()
 
-        // Ввод адреса
         binding.etTo.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = binding.etTo.text?.toString()?.trim().orEmpty()
@@ -94,7 +89,6 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
     }
 
     private fun geocodeAndRoute(query: String) {
-        // освежим старт
         if (startPoint == null) {
             mapHost?.centerOnMyLocationOnce()
             startPoint = mapHost?.getMyLocation()
@@ -110,7 +104,6 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
 
             destPoint = dest
 
-            // маркеры
             startPoint?.let { mapHost?.setStartMarker(it) }
             mapHost?.setDestinationMarker(dest)
 
@@ -135,9 +128,6 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
         Log.d(TAG, "buildRoute(a=$a -> b=$b, mode=$mode)")
     }
 
-    /**
-     * Геокод: 1 попытка + 1 повтор после принудительного обновления TLS-провайдера.
-     */
     private suspend fun geocodeFirstPoint(query: String): GeoPoint? = withContext(Dispatchers.IO) {
         val enc = try { URLEncoder.encode(query, "UTF-8") } catch (_: Throwable) { return@withContext null }
         val url = "https://catalog.api.2gis.com/3.0/items/geocode?q=$enc&region_id=32&fields=items.point&type=building,street,adm_div&key=$dgisApiKey"
@@ -164,16 +154,13 @@ class TransitFragment : Fragment(R.layout.fragment_transit) {
             }
         }
 
-        // 1-я попытка
         requestOnce() ?: run {
-            // форс-апдейт провайдера и повтор
             TlsFix.installGmsProvider(requireContext().applicationContext)
             TlsFix.tryInstallConscrypt()
             requestOnce()
         }
     }
 
-    /** Нормальный JSON-парсер под конкретный ответ 2ГИС. */
     private fun parsePointFromGeocode(body: String): GeoPoint? {
         return try {
             val root = JSONObject(body)

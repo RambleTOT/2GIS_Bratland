@@ -8,7 +8,7 @@ import javax.net.ssl.SSLContext
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        DGis.initialize(this)
+        DGis.initialize(this,)
         ProviderInstaller.installIfNeededAsync(
             this,
             object : ProviderInstaller.ProviderInstallListener {

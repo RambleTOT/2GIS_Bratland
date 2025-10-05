@@ -1,38 +1,18 @@
 package ru.gishackathon.app01.presentation
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import ru.dgis.sdk.DGis
-import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.geometry.GeoPointWithElevation
-import ru.dgis.sdk.map.CameraPosition
-import ru.dgis.sdk.map.Map
-import ru.dgis.sdk.map.MapObjectManager
-import ru.dgis.sdk.map.Marker
-import ru.dgis.sdk.map.MarkerOptions
-import ru.dgis.sdk.map.Zoom
-import ru.dgis.sdk.map.RoadEventSource
-import ru.dgis.sdk.map.RouteEditorSource
-import ru.dgis.sdk.map.TrafficSource
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
+import ru.dgis.sdk.map.imageFromBitmap
 import ru.dgis.sdk.map.imageFromResource
-import ru.dgis.sdk.routing.RouteEditor
-import ru.dgis.sdk.routing.RouteEditorRouteParams
-import ru.dgis.sdk.routing.RouteSearchPoint
-import ru.dgis.sdk.routing.RouteSearchOptions
-import ru.dgis.sdk.routing.CarRouteSearchOptions
-import ru.gishackathon.app01.presentation.ProfileAppFragment
 import ru.gishackathon.app01.R
 import ru.gishackathon.app01.databinding.FragmentSearchBinding
 
@@ -42,16 +22,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val binding get() = _binding!!
 
     private var layersBehavior: BottomSheetBehavior<out View>? = null
+    private lateinit var accessibilityBehavior: BottomSheetBehavior<LinearLayout>
+
     private var noiseOn = false
     private var eventsOn = false
-    private val colorOff by lazy { ColorStateList.valueOf(0xFF818181.toInt()) }
-    private val colorOn  by lazy { ColorStateList.valueOf(0xFF719EC5.toInt()) }
-
-    private lateinit var accessibilityBehavior: com.google.android.material.bottomsheet.BottomSheetBehavior<LinearLayout>
     private var anyAccessibilityOn = false
+
+    private val colorOff by lazy { android.content.res.ColorStateList.valueOf(0xFF818181.toInt()) }
+    private val colorOn  by lazy { android.content.res.ColorStateList.valueOf(0xFF719EC5.toInt()) }
 
     private val mapHost: MapHostFragment?
         get() = requireActivity().supportFragmentManager.findFragmentById(R.id.mapHost) as? MapHostFragment
+
+
+    private var eventsRenderer: EventsRenderer? = null
+    private var noiseRenderer: NoisePointsRenderer? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,8 +58,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             })
         }
 
-        binding.iconOutFeature.setOnClickListener { openAccessibilityModal() }
-
         val modal = binding.accessibilityModal
         accessibilityBehavior = BottomSheetBehavior.from(modal).apply {
             isFitToContents = true
@@ -82,19 +65,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             isHideable      = true
             state           = BottomSheetBehavior.STATE_HIDDEN
         }
-
         accessibilityBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> binding.dimView.visibility = View.GONE
-                    BottomSheetBehavior.STATE_DRAGGING,
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                        if (accessibilityBehavior.skipCollapsed &&
-                            accessibilityBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-                            accessibilityBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                    }
-                }
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) binding.dimView.visibility = View.GONE
             }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (binding.dimView.visibility != View.VISIBLE) binding.dimView.visibility = View.VISIBLE
@@ -102,13 +75,18 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             }
         })
 
+        binding.iconOutFeature.setOnClickListener { openAccessibilityModal() }
 
-        binding.iconOutFeature.setOnClickListener {
-            binding.dimView.visibility = View.VISIBLE
-            binding.dimView.alpha = 0f
-            binding.dimView.animate().alpha(0.6f).setDuration(150).start()
-            binding.accessibilityModal.visibility = View.VISIBLE
-            accessibilityBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.rowNoise.setOnClickListener {
+            noiseOn = !noiseOn
+            binding.icNoise.imageTintList = if (noiseOn) colorOn else colorOff
+            toggleNoiseLayer(noiseOn)
+        }
+
+        binding.rowEvents.setOnClickListener {
+            eventsOn = !eventsOn
+            binding.icEvents.imageTintList = if (eventsOn) colorOn else colorOff
+            toggleEventsLayer(eventsOn)
         }
 
         binding.btnCloseAccessibility.setOnClickListener { hideAccessibility() }
@@ -121,43 +99,91 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             layersBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        binding.rowNoise.setOnClickListener {
-            noiseOn = !noiseOn
-            binding.icNoise.imageTintList = if (noiseOn) colorOn else colorOff
-
-        }
-        binding.rowEvents.setOnClickListener {
-            eventsOn = !eventsOn
-            binding.icEvents.imageTintList = if (eventsOn) colorOn else colorOff
-
-        }
-
         binding.btnCloseLayers.setOnClickListener { hideLayersModal() }
         binding.dimView.setOnClickListener { hideLayersModal() }
 
         binding.iconEnd.setOnClickListener {
-            Toast.makeText(requireActivity(), "Это уже есть в приложении 2ГИС и в MVP нашего решения не входит", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "Это уже есть в 2ГИС и в MVP не входит", Toast.LENGTH_SHORT).show()
         }
 
         binding.swAvoidNoise.setOnCheckedChangeListener { _, _ -> updateOutFeatureIcon() }
         binding.swAvoidEvents.setOnCheckedChangeListener { _, _ -> updateOutFeatureIcon() }
         binding.swAvoidCrowded.setOnCheckedChangeListener { _, _ -> updateOutFeatureIcon() }
-
     }
-    private fun hideLayersModal() {
-        layersBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
 
     override fun onResume() {
         super.onResume()
         mapHost?.centerOnMyLocationOnce()
     }
 
+    private fun toggleNoiseLayer(enable: Boolean) {
+        val dgMap = mapHost?.exposeMap()
+        if (dgMap == null) {
+            Toast.makeText(context, "Карта ещё не готова", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (noiseRenderer == null) {
+            noiseRenderer = NoisePointsRenderer(map = dgMap) // без иконки
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            noiseRenderer?.setEnabled(enable)
+        }
+    }
+
+    private fun toggleEventsLayer(enable: Boolean) {
+        val dgMap = mapHost?.exposeMap()
+        if (dgMap == null) {
+            Toast.makeText(requireContext(), "Карта ещё не готова", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (eventsRenderer == null && dgMap != null) {
+            eventsRenderer = EventsRenderer(
+                map = dgMap,
+                onPolygonTapped = ::onEventAreaTapped // или { area -> onEventAreaTapped(area) }
+                // http = myOkHttp,                 // если нужен свой клиент — раскомментируйте
+                // endpointUrl = MY_URL             // если нужен другой URL — раскомментируйте
+            )
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            eventsRenderer?.setEnabled(enable)
+        }
+
+    }
+
+    private fun onEventAreaTapped(area: EventArea) {
+        // тут ваша логика показа информации/навигации
+        // пример-заглушка:
+        //showEventAreaDialog(area) // или любой ваш метод
+    }
+
+//    private fun showNoiseInfoDialog(info: Info) {
+//        val sources = if (info.noiseSources!!.isEmpty()) "—"
+//        else info.noiseSources!!.joinToString("\n• ", prefix = "• ")
+//        val message = buildString {
+//            appendLine("Улица: ${info.address!!.ifBlank { "—" }}")
+//            appendLine("Частота жалоб: ${info.complaintFrequency!!.ifBlank { "—" }}")
+//            appendLine()
+//            appendLine("Источники шума:")
+//            append(sources)
+//        }
+//        MaterialAlertDialogBuilder(requireContext())
+//            .setTitle("Шумовая точка")
+//            .setMessage(message)
+//            .setPositiveButton(android.R.string.ok, null)
+//            .show()
+//    }
+
+    // --- UI helpers ---
+
+    private fun hideLayersModal() {
+        layersBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
     private fun hideAccessibility() {
-        accessibilityBehavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+        accessibilityBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.dimView.animate().alpha(0f).setDuration(120).withEndAction {
-            binding.dimView.visibility = View.GONE
+            binding.dimView.isVisible = false
             binding.accessibilityModal.visibility = View.GONE
         }.start()
     }
@@ -172,27 +198,38 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun openAccessibilityModal() {
+
+        binding.accessibilityModal.visibility = View.VISIBLE
+
+        binding.dimView.apply {
+            isVisible = true
+            alpha = 0f
+            animate().alpha(0.6f).setDuration(120).start()
+            setOnClickListener { closeAccessibilityModal() }
+        }
+
+
+        accessibilityBehavior.apply {
+            isHideable = true
+            skipCollapsed = true
+            isDraggable = true
+
+            isFitToContents = false
+            expandedOffset = 0
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
-    fun openAccessibilityModal() {
-        val behavior = BottomSheetBehavior.from(binding.accessibilityModal)
-        binding.dimView.isVisible = true
-        binding.dimView.setOnClickListener { closeAccessibilityModal() }
-        binding.btnCloseAccessibility.setOnClickListener { closeAccessibilityModal() }
 
-        behavior.isDraggable = true
-        behavior.skipCollapsed = true
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    fun closeAccessibilityModal() {
+    private fun closeAccessibilityModal() {
         binding.dimView.isVisible = false
         BottomSheetBehavior.from(binding.accessibilityModal).state =
             BottomSheetBehavior.STATE_HIDDEN
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
